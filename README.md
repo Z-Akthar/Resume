@@ -1,2 +1,2 @@
 # Resume
-https://z-akthar.github.io/resume
+https://z-akthar.github.io/Resume
