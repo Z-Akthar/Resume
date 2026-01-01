@@ -965,26 +965,25 @@
                 </div>
                 
                 <div class="contact-form">
-                    <!-- Form with no action/method attributes - handled by JavaScript -->
                     <form id="contactForm">
                         <div class="form-group">
                             <label for="name" class="form-label">Your Name</label>
-                            <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name" required>
+                            <input type="text" id="name" class="form-control" placeholder="Enter your name" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="email" class="form-label">Your Email</label>
-                            <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                            <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="subject" class="form-label">Subject</label>
-                            <input type="text" id="subject" name="subject" class="form-control" placeholder="Project or inquiry" required>
+                            <input type="text" id="subject" class="form-control" placeholder="Project or inquiry" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="message" class="form-label">Your Message</label>
-                            <textarea id="message" name="message" class="form-control" rows="5" placeholder="..." required></textarea>
+                            <textarea id="message" class="form-control" rows="5" placeholder="..." required></textarea>
                         </div>
                         
                         <button type="submit" class="btn btn-primary" style="width: 100%;">
@@ -1099,7 +1098,7 @@
             initMobileMenu();
             initParallax();
             initScrollAnimations();
-            initFormHandler(); // This is the key function for contact form
+            initFormHandler();
             initSmoothScroll();
         }
         
@@ -1223,16 +1222,13 @@
             });
         }
         
-        // FORM HANDLER FOR GOOGLE APPS SCRIPT
+        // Form Handler
         function initFormHandler() {
             const contactForm = document.getElementById('contactForm');
             
             if (!contactForm) return;
             
-            // Your Google Apps Script Web App URL
-            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_2daTz5j0hKZqY4DhKkDah592RylFX7rQH2DHkE3yiiR59ZwA7KG3ikPkX-JaOXeB/exec';
-            
-            contactForm.addEventListener('submit', async (e) => {
+            contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
                 const submitBtn = contactForm.querySelector('button[type="submit"]');
@@ -1242,61 +1238,23 @@
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SENDING...';
                 submitBtn.disabled = true;
                 
-                try {
-                    // Get form data
-                    const formData = new FormData(contactForm);
-                    
-                    // Convert FormData to URL encoded string (Apps Script expects this)
-                    const urlEncodedData = new URLSearchParams();
-                    for (const pair of formData) {
-                        urlEncodedData.append(pair[0], pair[1]);
-                    }
-                    
-                    // Send to Google Apps Script
-                    // Note: We use 'no-cors' mode to avoid CORS issues with GitHub Pages
-                    await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: urlEncodedData.toString()
-                    });
-                    
-                    // With 'no-cors' mode, we can't read the response directly
-                    // but if the request was sent, it was successful
-                    
+                // Simulate API call
+                setTimeout(() => {
                     // Success state
                     submitBtn.innerHTML = '<i class="fas fa-check"></i> MESSAGE SENT!';
                     submitBtn.style.background = 'linear-gradient(135deg, #43e97b, #38f9d7)';
                     
-                    // Show success message
-                    showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-                    
-                    // Reset form after delay
+                    // Reset form
                     setTimeout(() => {
                         contactForm.reset();
                         submitBtn.innerHTML = originalText;
                         submitBtn.disabled = false;
                         submitBtn.style.background = '';
-                    }, 3000);
-                    
-                } catch (error) {
-                    // Error state
-                    submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ERROR!';
-                    submitBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
-                    
-                    // Show error message
-                    showNotification('Failed to send message. Please try again later.', 'error');
-                    
-                    // Reset button after delay
-                    setTimeout(() => {
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
-                        submitBtn.style.background = '';
-                    }, 3000);
-                    console.error('Form submission error:', error);
-                }
+                        
+                        // Show success message
+                        showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+                    }, 2000);
+                }, 1500);
             });
         }
         
@@ -1324,13 +1282,6 @@
                 max-width: 300px;
                 box-shadow: 0 10px 30px var(--shadow-color);
             `;
-            
-            // Add color based on type
-            if (type === 'success') {
-                notification.style.borderLeft = '4px solid var(--neon-lime)';
-            } else if (type === 'error') {
-                notification.style.borderLeft = '4px solid #ff6b6b';
-            }
             
             document.body.appendChild(notification);
             
